@@ -31,6 +31,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('upload_ttd', [MainController::class, 'upload_ttd'])->name('upload_ttd');        
         // End Kelola Akun Pengguna
 
+        // Kelola Dosen
+        Route::get('kpembimbing', [MainController::class, 'kpembimbing'])->name('kpembimbing');
+        
+        // End Kelola Dosen
     });
 
 });

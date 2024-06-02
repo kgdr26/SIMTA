@@ -206,4 +206,17 @@ class MainController extends Controller
     }
     // End Kelola Pengguna
 
+    // Kelola Dosen
+    function kpembimbing(): object {
+        $arr    = DB::table('users')->where('role_id', 1)->where('is_active', 1)->get();
+        $data = array(
+            'idnusr'    => $this->idnusr(),
+            'title'     => 'Kelola Admin',
+            'arr'       => $arr
+        );
+
+        return view('Admin.k_admin')->with($data);
+    }
+    // End Kelola Dosen
+
 }
