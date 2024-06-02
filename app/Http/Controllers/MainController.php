@@ -137,6 +137,19 @@ class MainController extends Controller
         return response('success');
     }
 
+    function upload_ttd(Request $request): object {
+
+        $id         = $request['id'];
+        $ttd        = $request['ttd'];
+        $update_by  = auth::user()->id;
+
+        $data   = array(
+            'ttd' => $ttd,
+        );
+        DB::table('users')->where('id', $id)->update($data);
+        return response('success');
+    }
+
     function actphoto(Request $request): object {
 
         if ($request->hasFile('add_foto')) {
@@ -151,16 +164,16 @@ class MainController extends Controller
             $request->file('add_foto')->move($path, $fileName);
 
             return response($fileName);
-        } elseif ($request->hasFile('add_machine')) {
+        } elseif ($request->hasFile('add_ttd')) {
             $fourRandomDigit = rand(10, 99999);
-            $photo      = $request->file('add_machine');
+            $photo      = $request->file('add_ttd');
             $fileName   = $fourRandomDigit . '.' . $photo->getClientOriginalExtension();
 
-            $path = public_path() . '/assets/machine/';
+            $path = public_path() . '/assets/ttd/';
 
             File::makeDirectory($path, 0777, true, true);
 
-            $request->file('add_machine')->move($path, $fileName);
+            $request->file('add_ttd')->move($path, $fileName);
 
             return response($fileName);
         } elseif ($request->hasFile('add_image')) {

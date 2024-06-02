@@ -34,6 +34,7 @@
                                         <th>NO TLP</th>
                                         <th>EMAIL</th>
                                         <th>PASSWORD</th>
+                                        <th>TTD</th>
                                         <th class="text-center">ACTION</th>
                                     </tr>
                                 </thead>
@@ -49,7 +50,18 @@
                                             <td>{{$val->no_tlp}}</td>
                                             <td>{{$val->email}}</td>
                                             <td>*** *** ***</td>
+                                            <td>
+                                                @if($val->ttd == '-')
+                                                    <span class="badge bg-danger">Belum Upload</span>
+                                                @else
+                                                    <span class="badge bg-success">Sudah Upload</span>
+                                                @endif
+                                            </td>
                                             <td class="text-center">
+                                                <button type="button" class="btn btn-outline-primary" data-name="upload_ttd" data-item="{{$val->id}}">
+                                                    <i class="bi bi-upload me-0"></i>
+                                                </button>
+
                                                 <button type="button" class="btn btn-outline-info" data-name="edit" data-item="{{$val->id}}">
                                                     <i class='bx bx-edit me-0'></i>
                                                 </button>
@@ -184,6 +196,40 @@
     </div>
 </div>
 {{-- End Modal Edit --}}
+
+{{-- Modal Upload TTD --}}
+<div class="modal fade" id="modal_ttd" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Upload TTD</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card-style">
+                            <div class="card-foto">
+                                <img src="{{ asset('assets/profile/default.jpg') }}" alt="user avatar" id="img_ttd">
+                            </div>
+                            <div class="input-type-file">
+                                <input type="file" id="ttd_foto" name="ttd_foto" accept="image/*" />
+                                <label for="ttd_foto">Choose File</label>
+                            </div>
+                            <input type="hidden" id="ttd_name_foto" data-name="ttd_foto">
+                            <input type="hidden" data-name="id_upload_ttd">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-name="save_ttd">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- End Modal Upload TTD --}}
 
 {{-- JS Add Data --}}
 <script>
@@ -367,7 +413,7 @@
             is_active : is_active
         };
 
-        console.log(data);
+        // console.log(data);
 
         if (nik === '' || name === '' || no_tlp === '' || email === '' || password === '') {
             Swal.fire({
@@ -442,6 +488,143 @@
     });
 </script>
 {{-- End JS Edit Data --}}
+
+{{-- JS Delete Data --}}
+<script>
+    $(document).on("click", "[data-name='delete']", function(e) {
+        var id = $(this).attr("data-item");
+
+        Swal.fire({
+            title: 'Anda yakin?',
+            text: 'Aksi ini tidak dapat diulang!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus data!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('delete_users') }}",
+                    data: {id:id},
+                    cache: false,
+                    success: function(data) {
+                        Swal.fire({
+                            position:'center',
+                            title: 'Success!',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then((data) => {
+                            location.reload();
+                        })
+                    },            
+                    error: function (data) {
+                        Swal.fire({
+                            position:'center',
+                            title: 'Action Not Valid!',
+                            icon: 'warning',
+                            showConfirmButton: true,
+                            // timer: 1500
+                        }).then((data) => {
+                            // location.reload();
+                        })
+                    }
+                });
+            }
+        })
+    });
+</script>
+{{-- End JS Delete Data --}}
+
+{{-- JS Upload TTD --}}
+<script>
+    $(document).on("click", "[data-name='upload_ttd']", function(e) {
+        var id = $(this).attr("data-item");
+        $("[data-name='id_upload_ttd']").val(id);
+        $("#modal_ttd").modal('show');
+    })
+    
+    $(document).on("click", "[data-name='save_ttd']", function(e) {
+        var id      = $("[data-name='id_upload_ttd']").val();
+        var ttd     = $("[data-name='ttd_foto']").val();
+
+        // console.log(data);
+
+        if (id === '' || ttd === '') {
+            Swal.fire({
+                position: 'center',
+                title: 'Form is empty!',
+                icon: 'error',
+                showConfirmButton: false,
+                timer: 1000
+            })
+        } else {
+            $.ajax({
+                type: "POST",
+                url: "{{route('upload_ttd')}}",
+                data: {id: id, ttd: ttd},
+                cache: false,
+                success: function(response) {
+                    // console.log(response);
+                    Swal.fire({
+                        position: 'center',
+                        title: 'Success!',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then((response) => {
+                        location.reload();
+                    })
+                },
+                error: function(response) {
+                    Swal.fire({
+                        position: 'center',
+                        title: 'Action Not Valid!',
+                        icon: 'warning',
+                        showConfirmButton: true,
+                        // timer: 1500
+                    }).then((response) => {
+                        // location.reload();
+                    })
+                }
+            });
+        }
+    });
+
+    $("#ttd_foto").on("change", function(e) {
+        var ext = $("#ttd_foto").val().split('.').pop().toLowerCase();
+        // console.log(ext)
+        if ($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Format image failed!'
+            })
+        } else {
+            var uploadedFile = URL.createObjectURL(e.target.files[0]);
+            $('#img_ttd').attr('src', uploadedFile);
+            var photo = e.target.files[0];
+            var formData = new FormData();
+            formData.append('add_ttd', photo);
+            $.ajax({
+                url: "{{route('actphoto')}}",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(res) {
+                    // console.log(res);
+                    $('#ttd_name_foto').val(res);
+                }
+            })
+
+        }
+    });
+</script>
+{{-- End JS Upload TTD --}}
 
 {{-- JS Datatable --}}
 <script>
