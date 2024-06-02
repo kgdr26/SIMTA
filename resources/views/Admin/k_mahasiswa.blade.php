@@ -84,7 +84,7 @@
                         <div class="card-style">
                             <div class="mb-3">
                                 <label for="" class="form-label">NIM</label>
-                                <input type="text" class="form-control" id="" placeholder="NIP" data-name="nik">
+                                <input type="text" class="form-control" id="" placeholder="NIM" data-name="nik">
                             </div>
                             <div class="mb-3">
                                 <label for="" class="form-label">Name</label>
@@ -141,7 +141,7 @@
                         <div class="card-style">
                             <div class="mb-3">
                                 <label for="" class="form-label">NIM</label>
-                                <input type="text" class="form-control" id="" placeholder="NIP" data-name="edit_nik">
+                                <input type="text" class="form-control" id="" placeholder="NIM" data-name="edit_nik">
                             </div>
                             <div class="mb-3">
                                 <label for="" class="form-label">Name</label>
